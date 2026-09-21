@@ -80,14 +80,21 @@ class Physics:
             forces[target.id][0] -= fx
             forces[target.id][1] -= fy
 
+        fixed_nodes = [node for node in node_list if node.fixed]
+        if fixed_nodes:
+            center_x = sum(node.x for node in fixed_nodes) / len(fixed_nodes)
+            center_y = sum(node.y for node in fixed_nodes) / len(fixed_nodes)
+        else:
+            center_x = center_y = 0.0
+
         for node in node_list:
             if node.fixed:
                 node.vx = node.vy = 0.0
                 continue
             fx, fy = forces[node.id]
             gravity = self.center_force * 0.12
-            fx -= node.x * gravity
-            fy -= node.y * gravity
+            fx -= (node.x - center_x) * gravity
+            fy -= (node.y - center_y) * gravity
             node.vx = (node.vx + fx * dt * 60.0) * self.damping
             node.vy = (node.vy + fy * dt * 60.0) * self.damping
             speed = math.hypot(node.vx, node.vy)
