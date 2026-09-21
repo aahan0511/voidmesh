@@ -2,21 +2,27 @@
 
 ## Requirements
 
-Voidmesh requires Python 3.14 and uses `pygame-ce` for its desktop renderer.
-The project is managed entirely with `uv`.
+Voidmesh supports Python 3.12 and later and uses `pygame-ce` for its desktop
+renderer.
 
 ## Install from PyPI
 
-Once a release has been published:
+With `uv`:
 
 ```console
 uv add voidmesh
 ```
 
+Or with `pip`:
+
+```console
+python -m pip install voidmesh
+```
+
 To work from this repository:
 
 ```console
-git clone <repository-url>
+git clone https://github.com/aahan0511/voidmesh.git
 cd voidmesh
 uv sync
 ```

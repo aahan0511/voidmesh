@@ -1,6 +1,6 @@
 # Voidmesh
 
-Voidmesh is a compact Python 3.14 library for displaying mutable graphs in a
+Voidmesh is a compact Python 3.12+ library for displaying mutable graphs in a
 clean desktop window. It supports two complementary views:
 
 - **Force view** — nodes repel one another, links behave like springs, and a

@@ -1,5 +1,9 @@
 site_name: Voidmesh
 site_description: Live force-directed graphs and systematic trees for Python
+site_url: https://aahan0511.github.io/voidmesh/
+repo_url: https://github.com/aahan0511/voidmesh
+repo_name: aahan0511/voidmesh
+edit_uri: edit/main/docs/
 theme:
   name: material
   palette:

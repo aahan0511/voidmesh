@@ -4,4 +4,4 @@ from .canvas import Canvas
 from .models import Link, Node
 
 __all__ = ["Canvas", "Link", "Node"]
-__version__ = "0.1.0"
+__version__ = "1.0.0"

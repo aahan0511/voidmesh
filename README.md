@@ -1,6 +1,6 @@
 # Voidmesh
 
-A small Python 3.14 library for building and displaying live, Obsidian-inspired
+A small Python 3.12+ library for building and displaying live, Obsidian-inspired
 force-directed graphs. Values are rendered inside draggable rounded nodes;
 links act like springs; gravity and repulsion settle the graph into place.
 
@@ -8,6 +8,12 @@ links act like springs; gravity and repulsion settle the graph into place.
 
 ```console
 uv add voidmesh
+```
+
+Or with `pip`:
+
+```console
+python -m pip install voidmesh
 ```
 
 For local development:
