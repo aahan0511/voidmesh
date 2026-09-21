@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import pytest
 
 from voidmesh import Canvas
@@ -111,3 +113,21 @@ def test_zoom_has_no_artificial_bounds() -> None:
     renderer.zoom = 0.001
     renderer._zoom_at(-100, (400, 300), screen)
     assert renderer.zoom < 0.25
+
+
+def test_window_close_stops_processing_events(monkeypatch: pytest.MonkeyPatch) -> None:
+    pygame = __import__("pygame")
+    canvas = Canvas(controls=False)
+    renderer = Renderer(canvas)
+    renderer.running = True
+    screen = pygame.Surface((800, 600))
+    monkeypatch.setattr(
+        pygame.event,
+        "get",
+        lambda: [SimpleNamespace(type=pygame.QUIT), SimpleNamespace(type=pygame.KEYDOWN, key=pygame.K_g)],
+    )
+
+    renderer._events(screen)
+
+    assert renderer.running is False
+    assert canvas.grid is False

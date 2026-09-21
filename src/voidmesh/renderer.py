@@ -323,6 +323,8 @@ class Renderer:
             while self.running:
                 dt = clock.tick(self.canvas.fps) / 1000.0
                 self._events(screen)
+                if not self.running:
+                    break
                 with self.canvas._locked_graph() as (nodes, links):
                     if self.canvas.layout == "force":
                         self.canvas.physics.step(nodes, links.values(), dt)
@@ -344,6 +346,7 @@ class Renderer:
                 event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
             ):
                 self.running = False
+                return
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_g:
                 self.canvas.toggle_grid()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_f:
