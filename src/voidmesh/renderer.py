@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -353,10 +354,7 @@ class Renderer:
             elif self.canvas.controls and self.panel.handle(event, screen):
                 continue
             elif event.type == pygame.MOUSEWHEEL:
-                before = self._from_screen(pygame.mouse.get_pos(), screen)
-                self.zoom = max(0.25, min(3.5, self.zoom * (1.12**event.y)))
-                after = self._from_screen(pygame.mouse.get_pos(), screen)
-                self.pan += (after - before) * self.zoom
+                self._zoom_at(event.y, pygame.mouse.get_pos(), screen)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self._start_drag(event.pos, screen)
@@ -375,6 +373,17 @@ class Renderer:
                     self.dragged.vx = self.dragged.vy = 0.0
                 elif self.panning:
                     self.pan += pygame.Vector2(event.rel)
+
+    def _zoom_at(
+        self, amount: int, point: tuple[int, int], screen: pygame.Surface
+    ) -> None:
+        before = self._from_screen(point, screen)
+        # Do not impose a view limit: large graphs need both deep zoom-out and
+        # close inspection. ``min`` only avoids an eventual zero from
+        # floating-point underflow, which would make coordinate conversion undefined.
+        self.zoom = max(sys.float_info.min, self.zoom * (1.12**amount))
+        after = self._from_screen(point, screen)
+        self.pan += (after - before) * self.zoom
 
     def _start_drag(self, point: tuple[int, int], screen: pygame.Surface) -> None:
         with self.canvas._locked_graph() as (nodes, _):

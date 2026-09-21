@@ -1,6 +1,7 @@
 import pytest
 
 from voidmesh import Canvas
+from voidmesh.renderer import Renderer
 
 
 def test_graph_lifecycle() -> None:
@@ -97,3 +98,16 @@ def test_tree_view_and_style_configuration() -> None:
     assert root.font == "serif"
     assert canvas.node_font == "monospace"
     assert link.width == 3
+
+
+def test_zoom_has_no_artificial_bounds() -> None:
+    canvas = Canvas(controls=False)
+    renderer = Renderer(canvas)
+    screen = __import__("pygame").Surface((800, 600))
+
+    renderer.zoom = 10_000
+    renderer._zoom_at(100, (400, 300), screen)
+    assert renderer.zoom > 3.5
+    renderer.zoom = 0.001
+    renderer._zoom_at(-100, (400, 300), screen)
+    assert renderer.zoom < 0.25
