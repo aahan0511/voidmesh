@@ -131,3 +131,28 @@ def test_window_close_stops_processing_events(monkeypatch: pytest.MonkeyPatch) -
 
     assert renderer.running is False
     assert canvas.grid is False
+
+
+def test_export_png_delegates_high_resolution_rendering(tmp_path) -> None:
+    class OpenRenderer:
+        running = True
+
+        def __init__(self) -> None:
+            self.request = None
+
+        def export_png(self, path, *, width, height) -> None:
+            self.request = path, width, height
+
+    canvas = Canvas()
+    renderer = OpenRenderer()
+    canvas._renderer = renderer
+
+    path = canvas.export_png(tmp_path / "graph.png", width=7680, height=4320)
+
+    assert path == (tmp_path / "graph.png").resolve()
+    assert renderer.request == (path, 7680, 4320)
+
+
+def test_export_png_requires_an_open_window() -> None:
+    with pytest.raises(RuntimeError, match="open the graph window"):
+        Canvas().export_png()

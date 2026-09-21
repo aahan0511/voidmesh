@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pygame
@@ -354,6 +355,8 @@ class Renderer:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_t:
                 next_layout = "tree" if self.canvas.layout == "force" else "force"
                 self.canvas.set_layout(next_layout)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                self.canvas.export_png()
             elif self.canvas.controls and self.panel.handle(event, screen):
                 continue
             elif event.type == pygame.MOUSEWHEEL:
@@ -401,7 +404,23 @@ class Renderer:
                     node.fixed = True
                     return
 
-    def _draw(self, screen, nodes, links) -> None:
+    def export_png(self, path: Path, *, width: int, height: int) -> None:
+        """Render the current graph camera to an image without window chrome."""
+        surface = pygame.Surface((width, height))
+        scale = min(width / self.canvas.width, height / self.canvas.height)
+        previous_zoom = self.zoom
+        previous_pan = self.pan.copy()
+        try:
+            self.zoom *= scale
+            self.pan *= scale
+            with self.canvas._locked_graph() as (nodes, links):
+                self._draw(surface, nodes, links, include_interface=False)
+            pygame.image.save(surface, str(path))
+        finally:
+            self.zoom = previous_zoom
+            self.pan = previous_pan
+
+    def _draw(self, screen, nodes, links, *, include_interface: bool = True) -> None:
         screen.fill(_color(self.canvas.background))
         if self.canvas.grid:
             self._draw_grid(screen)
@@ -446,10 +465,13 @@ class Renderer:
                 label = node_font.render(str(node.value), True, _text_color(fill))
                 screen.blit(label, label.get_rect(center=rect.center))
 
+        if not include_interface:
+            return
+
         ui_scale = self.panel.scale(screen)
         helper_font = self._font("sans", max(8, round(12 * ui_scale)))
         margin = round(16 * ui_scale)
-        hint = "drag nodes  •  wheel zoom  •  right-drag pan  •  G grid  •  T view"
+        hint = "drag nodes  •  wheel zoom  •  right-drag pan  •  E export  •  G grid  •  T view"
         hint_surface = helper_font.render(hint, True, (100, 116, 139))
         screen.blit(
             hint_surface, (margin, screen.get_height() - hint_surface.get_height() - margin)

@@ -9,6 +9,7 @@ import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import replace
+from pathlib import Path
 from typing import Any, Self
 
 from .layout import TreeLayout
@@ -401,6 +402,32 @@ class Canvas:
         thread = self._window_thread
         if thread is not None and thread is not threading.current_thread():
             thread.join()
+
+    def export_png(
+        self,
+        path: str | Path | None = None,
+        *,
+        width: int = 3840,
+        height: int = 2160,
+    ) -> Path:
+        """Export the open graph view as a high-resolution PNG.
+
+        The default output is a 3840 by 2160 image named ``voidmesh-export.png``
+        in the current directory. Pass larger dimensions for a larger export.
+        This method is available while the graph window is open; press ``E`` in
+        that window to create the default export.
+        """
+        if width <= 0 or height <= 0:
+            raise ValueError("PNG dimensions must be positive")
+        export_path = Path("voidmesh-export.png") if path is None else Path(path)
+        if export_path.suffix.lower() != ".png":
+            raise ValueError("PNG export path must end in .png")
+        renderer = self._renderer
+        if renderer is None or not renderer.running:
+            raise RuntimeError("open the graph window before exporting a PNG")
+        export_path = export_path.resolve()
+        renderer.export_png(export_path, width=width, height=height)
+        return export_path
 
     @property
     def is_open(self) -> bool:

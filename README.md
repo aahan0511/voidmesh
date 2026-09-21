@@ -54,7 +54,16 @@ canvas.close()
 
 Call `canvas.show()` without arguments for a blocking window. Drag nodes with
 the left mouse button, pan with the right mouse button, zoom with the wheel, and
-press Escape to close. `fixed=True` pins a node after it is dragged.
+press Escape to close. `fixed=True` pins a node after it is dragged. The force
+center is the origin until fixed nodes exist, then becomes their shared center.
+There is no artificial limit on graph zoom.
+
+Press `E` in an open window to export its graph view to `voidmesh-export.png` at
+4K (3840×2160). To choose the output location or a higher resolution:
+
+```python
+canvas.export_png("exports/my-graph.png", width=7680, height=4320)
+```
 
 The **Controls** panel changes center force, repulsion, link force, and link
 distance while the graph is moving. Drag its heading to reposition it, or click

@@ -67,6 +67,7 @@ Node/link arguments accept their object or string ID.
 | `configure_style(...)` | Changes font, node geometry, and link width |
 | `set_layout("force" | "tree")` | Changes view |
 | `toggle_grid(visible=None)` | Sets or toggles the grid and returns its state |
+| `export_png(path=None, width=3840, height=2160)` | Exports the open graph view without UI chrome |
 
 ### Window methods
 
