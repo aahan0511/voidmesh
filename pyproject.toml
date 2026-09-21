@@ -1,0 +1,40 @@
+[project]
+name = "voidmesh"
+version = "0.1.0"
+description = "Live force-directed graphs and systematic trees for Python"
+readme = "README.md"
+authors = [
+    { name = "Aahan", email = "188063520+aahan0511@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["graph", "visualization", "nodes", "physics", "canvas"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "pygame-ce>=2.5.8",
+]
+
+[project.scripts]
+voidmesh-demo = "voidmesh.demo:main"
+
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 96
+
+[dependency-groups]
+dev = [
+    "mkdocs-material>=9.7.7",
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+]
